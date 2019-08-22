@@ -1,6 +1,20 @@
+/* ************************************************************************** */
+/*                                                          LE - /            */
+/*                                                              /             */
+/*   realloc.c                                        .::    .:/ .      .::   */
+/*                                                 +:+:+   +:    +:  +:+:+    */
+/*   By: eruaud <eruaud@student.le-101.fr>          +:+   +:    +:    +:+     */
+/*                                                 #+#   #+    #+    #+#      */
+/*   Created: 2019/08/14 18:02:23 by eruaud       #+#   ##    ##    #+#       */
+/*   Updated: 2019/08/14 18:03:35 by eruaud      ###    #+. /#+    ###.fr     */
+/*                                                         /                  */
+/*                                                        /                   */
+/* ************************************************************************** */
+
 #include "malloc.h"
 
-void *realloc(void *ptr, size_t size) {
-   (void)size;
-    return ptr;
+void	*realloc(void *ptr, size_t size)
+{
+	(void)size;
+	return (ptr);
 }

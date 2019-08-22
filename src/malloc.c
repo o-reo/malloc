@@ -1,32 +1,36 @@
+/* ************************************************************************** */
+/*                                                          LE - /            */
+/*                                                              /             */
+/*   malloc.c                                         .::    .:/ .      .::   */
+/*                                                 +:+:+   +:    +:  +:+:+    */
+/*   By: eruaud <eruaud@student.le-101.fr>          +:+   +:    +:    +:+     */
+/*                                                 #+#   #+    #+    #+#      */
+/*   Created: 2019/08/12 10:57:45 by eruaud       #+#   ##    ##    #+#       */
+/*   Updated: 2019/08/20 17:14:16 by eruaud      ###    #+. /#+    ###.fr     */
+/*                                                         /                  */
+/*                                                        /                   */
+/* ************************************************************************** */
+
 #include "malloc.h"
 
-void	*map_block(void *location, int blocksize)
+
+void	*malloc(size_t size)
 {
-	void *ptr;
+	int		page_len;
+	void	*ptr;
 
-    	ptr = mmap(NULL, blocksize, PROT_READ | PROT_WRITE,
-               MAP_ANON | MAP_PRIVATE, -1, 0);
-
-    return (ptr);
-}
-
-void	*malloc(size_t size) {
-  int	pagelen;
-  void	*ptr;
-
-  pagelen = getpagesize();
-
-  if (size <= block_tiny_max)
-  {
-	  ptr = map_block(size)
-  }
-  else if (size <= block_small_max)
-  {
-	  ptr = map_block(size);
-  }
-  else
-  {
-	  ptr = map_block(size);
-  }
-  return ptr;
+	page_len = getpagesize();
+	if (size <= chunk_tiny_max)
+	{
+		ptr = memory_map(NULL, size);
+	}
+	else if (size <= chunk_small_max)
+	{
+		ptr = memory_map(NULL, size);
+	}
+	else
+	{
+		ptr = memory_map(NULL, size);
+	}
+	return (ptr);
 }

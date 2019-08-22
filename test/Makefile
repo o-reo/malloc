@@ -1,6 +1,6 @@
 NAME = test
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -fsanitize=alignment 
 FUNC = main
 SRC = $(addprefix src/, $(addsuffix .c, $(FUNC)))
 OBJ = $(addprefix build/, $(addsuffix .o, $(FUNC)))
@@ -9,14 +9,14 @@ GREEN = \033[1;92m
 BLUE = \033[34;1m
 YELLOW = \033[0;33m
 HEADER = -I ../includes/ -I ../libft/includes/
-LDLIBS = -lft -lmalloc
+LDLIBS = -lft -lft_malloc
 LDFLAGS = -L ../libft/ -L ../lib/
 
 all: $(NAME)
 
 $(NAME): $(OBJ) lib
 	@echo "\033[1;31mCompiling project..."
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(HEADER) $(LDLIBS) $(LDFLAGS)
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(HEADER) $(LDFLAGS) $(LDLIBS)
 	@echo "\033[1;92mSuccess !"
 
 ./build/%.o: ./src/%.c
@@ -25,7 +25,7 @@ $(NAME): $(OBJ) lib
 	@echo "     $(GREEN)   OK"
 
 lib :
-	@make -C ../libft
+	@make -C ../
 
 clean:
 	@/bin/rm -f $(OBJ)

@@ -18,10 +18,10 @@
 # include <unistd.h>
 # include <stdio.h>
 
-# ifdef __GNUC__
+# ifdef __unix__
 typedef __intmax_t intmax_t;
 typedef __uintmax_t uintmax_t;
-#endif
+# endif
 
 typedef struct	s_format
 {
