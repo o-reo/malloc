@@ -6,7 +6,7 @@
 /*   By: eruaud <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/08/19 18:04:51 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/08/22 17:30:35 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/08/28 18:42:53 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -14,31 +14,59 @@
 #include "malloc.h"
 
 /*
+** Returns the length of the expected bit array
+*/
+static int	zone_get_array_len(const size_t size)
+{
+	return (size / 8 * ALIGNMENT_IN_BYTES);
+}
+
+/*
+** Returns the first byte word at the specified index
+*/
+static void	*zone_get_last_byte(t_zone *zone)
+{
+	return (zone + sizeof(t_zone) + zone_get_array_len(zone->size));
+}
+
+/*
+** Returns the first byte word at the specified index
+*/
+static void	*zone_get_first_byte(t_zone *zone)
+{
+	return (zone + sizeof(t_zone));
+}
+
+/*
 ** Init a zone
 */
-t_zone	*zone_new(t_zone *prev_zone, size_t size)
+t_zone	*zone_new(void *header_location, size_t size)
 {
-	t_zone	*new_zone;
-   
-	new_zone = memory_map(prev_zone, sizeof(t_zone));
-	if (prev_zone) {
-		new_zone->location = memory_map(prev_zone->location, size);
-		prev_zone->next = new_zone;
-	}
-	else
+	t_zone	*zone;
+	int		i;
+	char	*first_byte;
+	char	*last_byte;
+
+	zone = (t_zone *)header_location;
+	zone->data = memory_map(NULL, size);
+	zone->size = size;
+	first_byte = zone_get_first_byte(zone);
+	last_byte = zone_get_last_byte(zone);
+	i = zone_get_array_len(size);
+	while (i-- > 0)
 	{
-		new_zone->location = memory_map(NULL, size);
+		first_byte[i] = 0;
+		last_byte[i] = 0;
 	}
-	new_zone->size = size;
-	new_zone->chunks = NULL;
-	new_zone->next = NULL;
-	return (new_zone);
+	return (zone);
 }
+
 
 void	zone_print(t_zone *zone)
 {
-	t_chunk		*i_chunk;
-
+	int		i;
+	int16_t *first_bytes;
+	
 	if (zone->size <= zone_tiny)
 	{
 		write(0, "TINY : ", 7);
@@ -51,82 +79,96 @@ void	zone_print(t_zone *zone)
 	{
 		write(0, "LARGE : ", 8);
 	}
-	write_ptr(zone->location);
+	write_ptr(zone->data);
 	write(0, "\n", 2);
-	i_chunk = zone->chunks;
-	while (i_chunk)
+	first_bytes = zone_get_first_byte(zone);
+	i = 0;
+	while (i < zone_get_array_len(zone->size))
 	{
-		write_ptr(i_chunk->location);
-		write(0, " - ", 4);
-		write_ptr(i_chunk->location + i_chunk->size - 1);
-		write(0, "\n", 2);
-		i_chunk = i_chunk->next;
+		if (first_bytes[i / 16] << (i % 16) == 1)
+			write_ptr(zone->data + i * ALIGNMENT_IN_BYTES);
+		i++;
 	}
 }
 
-/*
-** Delete the chunk
-*/
-void			zone_chunk_delete(t_zone *zone, t_chunk *chunk)
+size_t			zone_browse_last_bits(char byte)
 {
-	t_chunk		*i_chunk;
-	t_chunk		*prev_chunk;
+	size_t		size;
+	int			bit;
 
-	// get chunk in linked list
-	i_chunk = zone->chunks;
-	while (i_chunk && i_chunk != chunk)
+	bit = 0;
+	while (bit < 4)
 	{
-		prev_chunk = i_chunk;
-		i_chunk = i_chunk->next;
+		if ((byte & 0b10000000) == 0)
+			size++;
+		else
+			size = 0;
+		byte <<= 1;
+		bit++;
 	}
-	// not found
-	if (!i_chunk)
-		return;
-	if (i_chunk == zone->chunks)
-	{
-		zone->chunks = i_chunk->next;
-	
-	}
-	else 
-	{
-		prev_chunk->next = i_chunk->next;
-	}
-	chunk_free(chunk);
+	return (size);
 }
 
 /*
-** Insert a chunk in the linked list
+** Gets available size, if the last bit is 0 the value is negative
+*/
+size_t			zone_browse_first_bits(char byte)
+{
+	size_t		size;
+	int			bit;
+
+	bit = 0;
+	while (bit < 4)
+	{
+		if ((byte & 1) == 0) 
+			size++;
+		else
+			size = 0;
+		byte >>= 1;
+		bit++;
+	}
+	return (size);
+}
+
+/*
+** Goes through the byte arrays to get a gap with the good size
+** @return the available zone byte
+*/
+void		*zone_get_available_space(t_zone *zone, size_t size)
+{
+	size_t		i;
+	int16_t		*first_byte;
+	int16_t		*last_byte;
+	size_t		first_index;
+	size_t		current_size;
+
+	first_byte = (int16_t*)zone_get_first_byte(zone);
+	last_byte = (int16_t*)zone_get_last_byte(zone);
+	current_size = 8 * zone_get_array_len(zone->size);
+	i = 0;
+	// Goes bit per bit
+	while (i < current_size)
+	{
+		// iterates until we have a 0
+		while (((first_byte[i / 16] >> (i % 16)) & 1) == 1)
+			i++;
+		first_index = i;
+		// iterates until we have a 1 
+		while (((last_byte[i / 16] >> (i % 16)) & 1) == 0)
+			i++;
+		if ((i - first_index) >= size)
+		   return (zone->data + ALIGNMENT_IN_BYTES * first_index);	
+	}
+	return (NULL);	
+}
+
+/*
+** Record a chunk in the byte array
 ** @return the new chunk or NULL if zone has no sufficient contiguous space
 */
-t_chunk			*zone_chunk_create(t_zone *zone, size_t size)
+void			*zone_chunk_create(t_zone *zone, size_t size)
 {
-	t_chunk			*chunk;
-	t_chunk			*i_chunk;
-	t_chunk			*i_chunk_prev;
-
-	chunk = chunk_new(size);
-	if (zone->chunks == NULL)
-	{
-		if (zone->size < size) { return (NULL);}
-		chunk->location = zone->location;
-		zone->chunks = chunk;
-		return (chunk);
-	}
-	i_chunk = zone->chunks->next;
-	i_chunk_prev = zone->chunks;
-	while (i_chunk_prev)
-	{
-		if (!(chunk->location = chunk_next(i_chunk_prev, i_chunk, 
-						zone->location + zone->size)))
-		{
-			chunk->location = i_chunk_prev->location + i_chunk_prev->size;	
-			chunk->next = i_chunk;
-			i_chunk_prev->next = chunk;
-			return (chunk);
-		}
-		i_chunk_prev = i_chunk;
-		i_chunk = i_chunk ? i_chunk->next : NULL;
-	}
-	chunk_free(chunk);
+	(void)size;
+	(void)zone;
 	return (NULL);
 }

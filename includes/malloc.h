@@ -6,7 +6,7 @@
 /*   By: eruaud <eruaud@student.le-101.fr>          +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/08/14 18:05:14 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/08/22 17:31:22 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/08/28 18:38:00 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -18,8 +18,11 @@
 # include <sys/mman.h>
 # include <stddef.h>
 
-# define ALIGNMENT_IN_BYTES 2 
-
+# define ALIGNMENT_IN_BYTES 16 
+# define PAGE_PER_REGISTRY 4 
+# define ZONE_PER_REGISTRY 4  
+# define REGISTRY_SIZE 8192  
+typedef __int16_t int16_t;
 enum				e_chunk_size_max
 {
 	chunk_tiny_max = 8,
@@ -32,6 +35,9 @@ enum				e_bool
 	true,
 };
 
+/*
+** zone size is systematically rounded to the next getpagesize multiple
+*/
 enum				e_zone_type
 {
 	zone_empty = 0,
@@ -40,41 +46,32 @@ enum				e_zone_type
 	zone_large = 65,
 };
 
-/*
-** Chunks metadata
-*/
-typedef struct		s_chunk
+typedef struct		s_registry
 {
-	void			*location;
-	size_t			size;
-	struct s_chunk	*next;
-}					t_chunk;
+	void			*next;
+}					t_registry;
 
 /*
 ** Zones linked list
+** after a zone metadata there are two
+** rounded zone_size / (8 * ALIGNMENT_IN_BYTES) array containing
+** first_bytes and last_bytes
 */
 typedef struct		s_zone
 {
-	void			*location;
+	void			*data;	
 	size_t			size;
-	t_chunk			*chunks;
-	struct s_zone	*next;
 }					t_zone;
 
 /*
 ** Registry linked list
 */
-t_zone				*g_zones;
+t_registry			*g_registries;
 
 void				write_ptr(void *ptr);
 void				write_bin(void *ptr, size_t size);
-t_zone				*zone_new(t_zone *prev_zone, size_t size);
+t_zone				*zone_new(void *header_location, size_t size);
 void				zone_print(t_zone *zone);
-void				zone_chunk_delete(t_zone *zone, t_chunk *chunk);
-t_chunk				*zone_chunk_create(t_zone *zone, size_t size);
-t_chunk				*chunk_new(size_t size);
-void				chunk_free(t_chunk *chunk);
-void				*chunk_next(t_chunk *chunk1, t_chunk *chunk2, void *limit);
 void				*memory_map(void *location, size_t size);
 void				free(void *ptr);
 void				*malloc(size_t size);
