@@ -5,7 +5,7 @@ endif
 NAME = libft_malloc_$(HOSTTYPE).so
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -fpic -g
-FUNC = malloc free realloc debug zone memory registry
+FUNC = malloc free realloc debug zone zone_utils memory registry
 SRC = $(addprefix src/, $(addsuffix .c, $(FUNC) main)) includes/malloc.h
 OBJ = $(addprefix build/, $(addsuffix .o, $(FUNC)))
 RED = \033[1;31m

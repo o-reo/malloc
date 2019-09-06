@@ -6,7 +6,7 @@
 /*   By: eruaud <eruaud@student.le-101.fr>          +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/08/14 18:05:14 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/09/06 12:37:34 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/09/06 17:36:34 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -70,7 +70,8 @@ typedef struct		s_zone
 */
 extern void			*g_registries;
 
-enum e_bool			zone_check_range(t_zone *zone, void *address);
+void				*zone_get_first_byte(t_zone *zone);
+void				*zone_get_last_byte(t_zone *zone);
 void				*zone_chunk_create(t_zone *zone, size_t size);
 void				zone_chunk_forget(t_zone *zone, void *address);
 void				registry_init(void);
