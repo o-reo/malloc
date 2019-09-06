@@ -1,6 +1,6 @@
 NAME = test
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -fsanitize=alignment 
+CFLAGS = -Wall -Wextra -Werror -g
 FUNC = main
 SRC = $(addprefix src/, $(addsuffix .c, $(FUNC)))
 OBJ = $(addprefix build/, $(addsuffix .o, $(FUNC)))

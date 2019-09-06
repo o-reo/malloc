@@ -4,7 +4,7 @@ endif
 
 NAME = libft_malloc_$(HOSTTYPE).so
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -fpic -g
 FUNC = malloc free realloc debug zone memory registry
 SRC = $(addprefix src/, $(addsuffix .c, $(FUNC) main)) includes/malloc.h
 OBJ = $(addprefix build/, $(addsuffix .o, $(FUNC)))
@@ -14,14 +14,13 @@ BLUE = \033[34;1m
 YELLOW = \033[0;33m
 HEADER = -I includes/ -I libft/includes/
 LDLIBS = -lft
-LDFLAGS = -L libft/ -shared
+LDFLAGS = -L libft/
 
 all: $(NAME)
 
 $(NAME): $(OBJ) lib
 	@rm -f lib/libft_malloc.so
-	@ar -rc lib/$(NAME) $(OBJ)
-	@ranlib lib/$(NAME)
+	@$(CC) -shared -o lib/$(NAME) $(OBJ)
 	@ln -s $(PWD)/lib/$(NAME) $(PWD)/lib/libft_malloc.so
 
 ./build/%.o: ./src/%.c

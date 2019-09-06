@@ -6,7 +6,7 @@
 /*   By: eruaud <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/08/27 17:34:32 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/08/27 17:34:58 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/08/30 16:13:41 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -62,4 +62,24 @@ void		write_bin(void *data, size_t size)
 		i++;
 	}
 	write(0, address, size + 2);
+}
+
+void		write_num(unsigned long	number)
+{
+	char	num[30];
+	int		i;
+
+	i = 0;
+	if (number == 0) {
+		num[28] = '0';
+		i = 1;
+	}
+	while (number > 0)
+	{
+		num[28 - i] = '0' + number % 10;
+		number /= 10;
+		i++;
+	}
+	num[29] = '\0';
+	write(0, num + 28 - i + 1, i + 1);
 }
