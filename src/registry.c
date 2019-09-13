@@ -6,7 +6,7 @@
 /*   By: eruaud <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/08/15 12:03:17 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/09/11 18:32:29 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/09/13 15:55:37 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -68,7 +68,6 @@ void		*registry_append(void)
 */
 t_zone		*registry_zone_add(size_t size)
 {
-	void		*prev_address;
 	void		*address;
 	void		*reg;
 	size_t		gap;
@@ -77,24 +76,22 @@ t_zone		*registry_zone_add(size_t size)
 	reg = g_registries;
 	while (reg)
 	{
-		prev_address = NULL;
 		address = reg + sizeof(t_registry);
 		while (address)
 		{
 			zone = (t_zone*)address;
-			// must create first zone 
+			// must create first zone
 			if (zone->data == NULL)
 				return (zone_new(address, size));	
-			gap = zone->next ? (void*)(zone->next) - address : 
-				reg + REGISTRY_SIZE - (address + zone_size(zone->size));
+			gap = zone->next ? (void*)(zone->next) - 
+				address - zone_size(zone->size) : 
+				reg + REGISTRY_SIZE - address - zone_size(zone->size);
 			if (gap >= zone_size(size))
 			{
 				zone = zone_new(address + zone_size(zone->size), size);
-				if (prev_address)
-					((t_zone*)prev_address)->next = zone;
+				((t_zone*)address)->next = zone;
 				return (zone);
 			}
-			prev_address = address;
 			// go to next available zone
 			address = (void*)(zone->next);
 		}

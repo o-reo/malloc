@@ -6,7 +6,7 @@
 /*   By: eruaud <eruaud@student.le-101.fr>          +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/08/14 18:05:14 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/09/11 16:40:11 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/09/13 15:24:43 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -20,7 +20,7 @@
 
 # define ALIGNMENT 16 
 # define PAGE_PER_REGISTRY 4 
-# define REGISTRY_SIZE 4096 
+# define REGISTRY_SIZE 16384 
 
 typedef __int64_t int64_t;
 

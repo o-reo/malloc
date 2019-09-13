@@ -6,7 +6,7 @@
 /*   By: eruaud <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/09/09 16:30:42 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/09/11 17:59:12 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/09/13 15:58:23 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -90,11 +90,11 @@ static int	test_malloc(void)
 
 	registry_reset();
 	registry_init();
-	i = 100;
+	i = 47;
 	ptr = NULL;
 	while (i--)
 	{
-		write_num(i);
+		malloc(24);
 		ptr = malloc(1024);
 		((char*)ptr)[0] = 42;
 	}
