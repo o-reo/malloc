@@ -6,7 +6,7 @@
 /*   By: eruaud <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/08/19 18:04:51 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/09/11 18:41:24 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/09/13 17:26:09 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -30,7 +30,7 @@ t_zone			*zone_new(void *header_location, size_t size)
 	zone->next = NULL;
 	first_byte = zone_get_first_byte(zone);
 	last_byte = zone_get_last_byte(zone);
-	i = divide_ceil(size, 8 * ALIGNMENT);
+	i = divide_ceil(size, ALIGNMENT);
 	while (i-- >= 0)
 	{
 		first_byte[i] = 0;
@@ -91,6 +91,8 @@ void			*zone_chunk_create(t_zone *zone, size_t size)
 	size_t		first_index;
 	size_t		current_size;
 
+	if (size > chunk_tiny_max && zone->size != zone_small)
+		return (NULL);
 	first_byte = (int64_t*)zone_get_first_byte(zone);
 	last_byte = (int64_t*)zone_get_last_byte(zone);
 	current_size = divide_ceil(zone->size, ALIGNMENT);

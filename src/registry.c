@@ -6,7 +6,7 @@
 /*   By: eruaud <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/08/15 12:03:17 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/09/13 15:55:37 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/09/13 17:31:30 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -133,9 +133,9 @@ void		*registry_zone_create_chunk(size_t size)
 	reg = g_registries;
 	zone_size = size > chunk_tiny_max ? zone_small : zone_tiny;  
 	while (reg && !chunk)
-	{	
+	{
 		zone = (t_zone*)(reg + sizeof(t_registry));
-		while (zone && zone->data && !(chunk = zone_chunk_create(zone, size)))
+		while (zone && !(chunk = zone_chunk_create(zone, size)))
 			zone = zone->next;
 		reg = ((t_registry*)reg)->next;
 	}

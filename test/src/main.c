@@ -6,7 +6,7 @@
 /*   By: eruaud <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/09/09 16:30:42 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/09/13 15:58:23 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/09/13 16:58:15 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -17,6 +17,7 @@
 
 static int	test_zone(void)
 {
+	/*
 	t_zone		*zone;
 	void		*chunk;
 	void		*chunk1;
@@ -63,11 +64,13 @@ static int	test_zone(void)
 	assert(zone_chunk_forget(zone, chunk) == e_false);
 	assert(zone_chunk_forget(zone, chunk2) == e_true);
 	assert(zone_chunk_forget(zone, chunk2) == e_false);
+	*/
 	return (0);
 }
 
 static int	test_registry(void)
 {
+	/*
 	t_zone	*zone;
 	t_zone	*zone2;
 	void	*chunk;
@@ -80,6 +83,7 @@ static int	test_registry(void)
 	assert(zone == zone2);
 	chunk = registry_zone_create_chunk(612);
 	zone_print(zone);
+	*/
 	return (0);
 }
 
@@ -90,15 +94,14 @@ static int	test_malloc(void)
 
 	registry_reset();
 	registry_init();
-	i = 47;
+	i = 33;
 	ptr = NULL;
 	while (i--)
 	{
-		malloc(24);
 		ptr = malloc(1024);
 		((char*)ptr)[0] = 42;
-	}
 	show_alloc_mem();
+	}
 	return (0);
 }
 

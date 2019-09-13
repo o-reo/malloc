@@ -6,7 +6,7 @@
 /*   By: eruaud <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/09/06 17:31:45 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/09/10 16:41:40 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/09/13 16:43:31 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -63,18 +63,19 @@ static size_t	zone_print_chunk(t_zone *zone, int64_t *first_bytes,
 		int64_t *last_bytes, size_t i)
 {
 	size_t	first_byte;
+	size_t	current_size;
 
+	current_size = divide_ceil(zone->size, ALIGNMENT);
 	first_byte = 0;
-
-	while (((first_bytes[i / 64] >> (i % 64)) & 1) == 0 
-			&& i < zone->size / ALIGNMENT)
+	while (((first_bytes[i / 64] >> (i % 64)) & 1L) == 0 
+			&& i < current_size)
 		i++;
 	first_byte = i;
-	while (((last_bytes[i / 64] >> (i % 64)) & 1) == 0 
-			&& i < zone->size / ALIGNMENT)
+	while (((last_bytes[i / 64] >> (i % 64)) & 1L) == 0 
+			&& i < current_size)
 		i++;
-	if (i >= zone->size / ALIGNMENT)
-		return (zone->size / ALIGNMENT);
+	if (i >= current_size)
+		return (current_size);
 	write_ptr(zone->data + first_byte * ALIGNMENT);
 	write(0, " - ", 3);
 	write_ptr(zone->data + (i + 1) * ALIGNMENT - 1);
@@ -91,23 +92,19 @@ void			zone_print(t_zone *zone)
 	int64_t *last_bytes;
 
 	if (zone->size <= zone_tiny)
-	{
 		write(0, "TINY : ", 7);
-	}
 	else if (zone->size <= zone_small)
-	{
 		write(0, "SMALL : ", 8);
-	}
 	else
-	{
 		write(0, "LARGE : ", 8);
-	}
 	write_ptr(zone->data);
 	write(0, "\n", 2);
+	if (zone->size > zone_small)
+		return;
 	first_bytes = zone_get_first_byte(zone);
 	last_bytes = zone_get_last_byte(zone);
 	i = 0;
-	while (i < zone->size / ALIGNMENT)
+	while (i < divide_ceil(zone->size, ALIGNMENT))
 		i = zone_print_chunk(zone, first_bytes, last_bytes, i);
 	write(0, "\n", 2);
 }
