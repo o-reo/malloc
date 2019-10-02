@@ -6,7 +6,7 @@
 /*   By: eruaud <eruaud@student.le-101.fr>          +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/08/12 10:57:45 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/09/09 16:53:05 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/09/18 11:48:31 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -25,9 +25,8 @@ void	*malloc(size_t size)
 		ptr = registry_zone_create_chunk(size);
 	}
 	else
-	{
-		write(0, "LARGE ZONE NOT IMPLEMENTED\n", 26);
-		ptr = NULL;
+	{		
+		ptr = registry_zone_large(size);
 	}
 	return (ptr);
 }

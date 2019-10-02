@@ -6,7 +6,7 @@
 /*   By: eruaud <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/08/27 16:15:42 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/09/04 15:08:41 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/09/19 15:09:16 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -21,7 +21,7 @@ size_t	memory_size_to_page(size_t size)
 	int		page_size;
 
 	page_size = getpagesize();
-	return ((size % page_size != 0) + size / page_size) * page_size;
+	return (size + page_size % size);
 }
 
 /*
@@ -41,8 +41,12 @@ void	*memory_map(void *location, size_t size)
 	return (ptr);
 }
 
-void	*memory_align(void *address)
+size_t	memory_align_size(size_t size)
 {
-	return ((void*)(16 * ((size_t)address / 16 + 
-					((size_t)address % 16 != 0))));	
+	return (size + size % ALIGNMENT);
+}
+
+void	memory_unmap(void *location, size_t size)
+{
+	munmap(location, memory_size_to_page(size));
 }
