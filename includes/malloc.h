@@ -6,7 +6,7 @@
 /*   By: eruaud <eruaud@student.le-101.fr>          +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/08/14 18:05:14 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/10/02 11:10:43 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/10/02 17:31:51 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -27,7 +27,7 @@ typedef __uint32_t uint32_t;
 enum				e_chunk_size_max
 {
 	chunk_tiny_max = 1024,
-	chunk_small_max = 8192,
+	chunk_small_max = 512000,
 };
 
 enum				e_bool
@@ -77,6 +77,7 @@ void				*g_registries;
 void				show_alloc_mem(void);
 void				free(void *ptr);
 void				*malloc(size_t size);
+void				*calloc(size_t count, size_t size);
 void				*realloc(void *ptr, size_t size);
 
 /*

@@ -6,7 +6,7 @@
 /*   By: eruaud <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/09/19 14:13:52 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/10/02 11:42:55 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/10/02 17:23:13 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -15,7 +15,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-static int	test_zone(void)
+int	test_zone(void)
 {
 	/*
 	t_zone		*zone;
@@ -68,7 +68,7 @@ static int	test_zone(void)
 	return (0);
 }
 
-static int	test_registry(void)
+int	test_registry(void)
 {
 	/*
 	t_zone	*zone;
@@ -86,26 +86,67 @@ static int	test_registry(void)
 	*/
 	return (0);
 }
+# include <string.h>
+int	test_error(void)
+{
+	void	*ptr[5000];
+	// Test 0
+	ptr[0] = malloc(0);
+	if ((uint32_t)ptr[0] % 16 != 0)
+		return (-1);
+	free(ptr[0]);
+	// Test 1 
+	int i = 1;
+	while (i < 5000)
+	{
+		ptr[i] = malloc(i);
+		memset(ptr[i], 'a', i);	
+		i += 3;
+	}
+	// Test 2
+	i = 1;
+	while (i < 5000)
+	{
+		char cmp[i];
+	 	memset(cmp, 'a', i);
+		if (memcmp(cmp, ptr[i], i) != 0)
+			return (-1);
+		i += 3;
+	}
+	
+	// Free not allocated
+	free((void*)92);
+	
+	// Realloc
+	void *re = malloc(50);
+	realloc(re, 50000);	
+	return (0);
+}
 
-static int	test_malloc(void)
+int	test_malloc(void)
 {
 	int		i;
 	void	*ptr;
 
-	registry_reset();
-	i = 1000;
+	//registry_reset();
+	i = 500;
 	ptr = NULL;
 	while (i--)
 	{
-		ptr = malloc(1024);
-		((char*)ptr)[1023] = 42;
+		ptr = malloc(512000);
+		((char*)ptr)[511999] = 42;
+		free(ptr);
 	}
-	malloc(1025);
+	while (i++ < 2000)
+	{
+		ptr = malloc(10000);
+		free(ptr);
+	}
 	show_alloc_mem();
 	return (0);
 }
 
-static int	test_free(void)
+int	test_free(void)
 {
 	
 	int		i;
@@ -116,12 +157,12 @@ static int	test_free(void)
 	ptr = NULL;
 	while (i--)
 	{
-		ptr = malloc(1024);
-		((char*)ptr)[0] = 42;
-		free(ptr);
+		//ptr = malloc(1024);
+		//((char*)ptr)[0] = 42;
+		//free(ptr);
 	}
 	
-	show_alloc_mem();
+	//show_alloc_mem();
 	
 	return (0);
 
@@ -131,9 +172,10 @@ int		main()
 {
 	write(1, "~----------------------------~\n", 31);
 	write(1, "~-------Malloc Testing-------~\n", 31);
-	test_zone();
-	test_registry();
-	test_malloc();
-	test_free();
+	test_error() != 0 ? write(1, "KO\n", 3) : write(1, "OK\n", 3);
+	//test_zone();
+	//test_registry();
+	//test_malloc();
+	//test_free();
 	return (0);
 }

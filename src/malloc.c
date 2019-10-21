@@ -6,7 +6,7 @@
 /*   By: eruaud <eruaud@student.le-101.fr>          +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/08/12 10:57:45 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/09/18 11:48:31 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/10/02 17:03:53 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -18,6 +18,7 @@ void	*malloc(size_t size)
 {
 	void	*ptr;
 
+//	write(1, "MALLOC:", 7);
 	ptr = NULL;
 	registry_init();
 	if (size <= chunk_small_max)
@@ -25,8 +26,20 @@ void	*malloc(size_t size)
 		ptr = registry_zone_create_chunk(size);
 	}
 	else
-	{		
+	{
+		write(1, "LARGE\n", 6);
 		ptr = registry_zone_large(size);
 	}
+//	write_num(size);
+//	write(1, "\n", 1);
+//	write_ptr(ptr);
+//	write(1, "\n", 1);
+	int i = 0;
+	while (i < (int)size){
+		((char*)ptr)[i] = 42;
+		i++;
+	}
+//	write(1, "EXIT MALLOC\n", 12);
+	// show_alloc_mem();
 	return (ptr);
 }

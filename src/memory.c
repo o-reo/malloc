@@ -33,7 +33,8 @@ void	*memory_map(void *location, size_t size)
 {
 	void	*ptr;
 
-	ptr = mmap(location, memory_size_to_page(size), 
+	location = NULL;
+	ptr = mmap(NULL, memory_size_to_page(size), 
 			PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
 	if (ptr == (void*)-1) {
 		return (NULL);

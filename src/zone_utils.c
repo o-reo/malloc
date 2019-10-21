@@ -50,8 +50,7 @@ void			zone_print_mask(t_zone *zone)
 	write(0, "\n", 1);
 	last_bytes = (uint32_t*)zone_get_last_byte(zone);
 	i = 0;
-	while (i < 8 * zone_bytes_size(zone->size))
-	{
+	while (i < 8 * zone_bytes_size(zone->size))	{
 		(last_bytes[i / 32] >> i % 32) & 1 ? write(1, "1", 1) :
 			write(1, "0", 1);
 		i++;

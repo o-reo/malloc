@@ -130,7 +130,7 @@ void		*registry_zone_large(size_t size)
 {	
 	t_zone	*zone;
 
-	zone = registry_zone_add(size);
+	zone = registry_zone_add(size + memory_align_size(sizeof(t_zone)));
 	return (zone->data);
 }
 
@@ -138,9 +138,12 @@ void		registry_chunk_forget(void *address)
 {
 	t_zone	*zone;
 
-	zone = registry_zone_find(address);
-	zone_chunk_forget(zone, address);
-	if (zone_is_empty(zone))
+	if (!(zone = registry_zone_find(address))) {
+		return ;
+	}
+	if (zone->size < zone_large)
+		zone_chunk_forget(zone, address);
+	if (zone->size >= zone_large || zone_is_empty(zone))
 	{
 		zone_free(zone);
 		registry_free_if_empty();

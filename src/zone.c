@@ -6,7 +6,7 @@
 /*   By: eruaud <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/08/19 18:04:51 by eruaud       #+#   ##    ##    #+#       */
-/*   Updated: 2019/09/19 15:03:19 by eruaud      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/10/02 17:47:03 by eruaud      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -24,8 +24,9 @@ t_zone			*zone_new(void *header_location, size_t size)
 	zone = (t_zone *)header_location;
 	zone->data = memory_map(NULL, size);
 	zone->size = size;
+	if (size < zone_large)
+		ft_bzero(zone_get_first_byte(zone), 2 * zone_bytes_size(zone->size));
 	zone->next = NULL;
-	ft_bzero(zone_get_first_byte(zone), 2 * zone_bytes_size(zone->size));
 	return (zone);
 }
 

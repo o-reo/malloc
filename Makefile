@@ -6,7 +6,7 @@ NAME = libft_malloc_$(HOSTTYPE).so
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -fpic -g
 FUNC = malloc free realloc debug utils zone zone_utils zone_utils2 zone_utils3\
-	   memory registry registry_utils
+	   memory registry registry_utils calloc
 SRC = $(addprefix src/, $(addsuffix .c, $(FUNC) main)) includes/malloc.h
 OBJ = $(addprefix build/, $(addsuffix .o, $(FUNC)))
 RED = \033[1;31m
