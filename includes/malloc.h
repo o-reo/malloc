@@ -27,7 +27,7 @@ typedef __uint32_t uint32_t;
 enum				e_chunk_size_max
 {
 	chunk_tiny_max = 1024,
-	chunk_small_max = 512000,
+	chunk_small_max = 16000,
 };
 
 enum				e_bool
@@ -72,7 +72,7 @@ typedef struct		s_zone
 void				*g_registries;
 
 /*
-** Main functions
+** EXTERNAL FUNCTIONS
 */
 void				show_alloc_mem(void);
 void				free(void *ptr);
@@ -131,5 +131,10 @@ void				zone_free(t_zone *zone);
 size_t				zone_head_size(size_t size);
 size_t				zone_bytes_size(size_t size);
 size_t				zone_quantum(size_t size);
+
+/*
+** DEBUG
+*/
+void				debug_fill_all();
 
 #endif

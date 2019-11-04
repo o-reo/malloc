@@ -84,3 +84,62 @@ void		write_num(unsigned long	number)
 	write(1, num + 28 - i + 1, i + 1);
 }
 
+size_t		zone_fill_next_chunk(t_zone *zone, size_t i)
+{
+	uint32_t	*fbyte;
+	uint32_t	*lbyte;
+
+	fbyte = zone_get_first_byte(zone);
+	lbyte = zone_get_last_byte(zone);
+	i++;
+	while (i < zone_bytes_size(zone->size))
+	{
+		if (((fbyte[i / 32] >> (i % 32)) & 1L) != 0)
+			break;
+		i++;
+	}
+	while (i < zone_bytes_size(zone->size))
+	{
+		ft_bzero(zone->data + zone_quantum(zone->size) * i, zone_quantum(zone->size));
+		if (((lbyte[i / 32] >> (i % 32)) & 1L) != 0)
+			break;
+		i++;
+	}
+	return (i);
+}
+
+void		debug_fill_all()
+{
+	void	*reg;
+	t_zone		*zone;
+	size_t		i;
+
+	reg = g_registries;
+	while (reg != NULL)
+	{
+		zone = (t_zone*)(reg + memory_align_size(sizeof(t_registry)));
+		while (zone != NULL)
+		{
+			i = 0;
+			while ((i = zone_fill_next_chunk(zone, i)) < zone_bytes_size(zone->size));
+			zone = zone->next;
+		}
+		reg = ((t_registry*)reg)->next;
+	}
+}
+/*
+
+	first_bytes = zone_get_first_byte(zone);
+	last_bytes = zone_get_last_byte(zone);
+	i = divide_ceil(address - zone->data, zone_quantum(zone->size));
+	if (((first_bytes[i / 32] >> (i % 32)) & 1L) != 1)
+		return (e_false);
+	while (i > 0 && ((first_bytes[i / 32] >> (i % 32)) & 1L) == 0 &&
+		   	((last_bytes[i / 32] >> (i % 32) & 1L) == 0))
+		i--;
+	first_bytes[i / 32] ^= 1L << (i % 32);
+	while (((last_bytes[i / 32] >> (i % 32)) & 1L) == 0)
+		i++;
+	last_bytes[i / 32] ^= 1L << (i % 32);
+	return (e_true);
+*/

@@ -21,7 +21,7 @@ size_t	memory_size_to_page(size_t size)
 	int		page_size;
 
 	page_size = getpagesize();
-	return (size + page_size % size);
+	return (page_size * divide_ceil(size, page_size));
 }
 
 /*

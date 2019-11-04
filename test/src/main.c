@@ -90,11 +90,13 @@ int	test_registry(void)
 int	test_error(void)
 {
 	void	*ptr[5000];
+	
 	// Test 0
 	ptr[0] = malloc(0);
 	if ((uint32_t)ptr[0] % 16 != 0)
 		return (-1);
 	free(ptr[0]);
+
 	// Test 1 
 	int i = 1;
 	while (i < 5000)
@@ -103,7 +105,8 @@ int	test_error(void)
 		memset(ptr[i], 'a', i);	
 		i += 3;
 	}
-	// Test 2
+	
+	// Test 2 / 3
 	i = 1;
 	while (i < 5000)
 	{
@@ -114,13 +117,19 @@ int	test_error(void)
 		i += 3;
 	}
 	
+	// Test 3
+
 	// Free not allocated
 	free((void*)92);
 	
 	// Realloc
 	void *re = malloc(50);
-	realloc(re, 50000);	
-	return (0);
+	re = realloc(re, 50000);
+	memset(re, 'b', 50000);
+	if (((char*)re)[49999] != 'b')
+		return -1;
+	debug_fill_all();
+	return (1);
 }
 
 int	test_malloc(void)
@@ -128,21 +137,23 @@ int	test_malloc(void)
 	int		i;
 	void	*ptr;
 
-	//registry_reset();
-	i = 500;
+	registry_reset();
+	i = 100;
 	ptr = NULL;
 	while (i--)
 	{
 		ptr = malloc(512000);
-		((char*)ptr)[511999] = 42;
-		free(ptr);
+		memset(ptr, '*', 512000);
+		// free(ptr);
 	}
 	while (i++ < 2000)
 	{
 		ptr = malloc(10000);
-		free(ptr);
+		memset(ptr, '*', 10000);
+		// free(ptr);
 	}
-	show_alloc_mem();
+	debug_fill_all();
+	// show_alloc_mem();
 	return (0);
 }
 
@@ -157,11 +168,12 @@ int	test_free(void)
 	ptr = NULL;
 	while (i--)
 	{
-		//ptr = malloc(1024);
-		//((char*)ptr)[0] = 42;
-		//free(ptr);
+		ptr = malloc(1024);
+		memset(ptr, '*', 1024);
+		free(ptr);
 	}
 	
+	debug_fill_all();
 	//show_alloc_mem();
 	
 	return (0);
@@ -172,10 +184,10 @@ int		main()
 {
 	write(1, "~----------------------------~\n", 31);
 	write(1, "~-------Malloc Testing-------~\n", 31);
-	test_error() != 0 ? write(1, "KO\n", 3) : write(1, "OK\n", 3);
-	//test_zone();
-	//test_registry();
-	//test_malloc();
-	//test_free();
+	test_error() <= 0 ? write(1, "KO\n", 3) : write(1, "OK\n", 3);
+	test_zone();
+	test_registry();
+	test_malloc();
+	test_free();
 	return (0);
 }

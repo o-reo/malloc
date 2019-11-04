@@ -143,6 +143,7 @@ void		registry_chunk_forget(void *address)
 	}
 	if (zone->size < zone_large)
 		zone_chunk_forget(zone, address);
+	// FREE ZONE IF EMPTY?
 	if (zone->size >= zone_large || zone_is_empty(zone))
 	{
 		zone_free(zone);

@@ -22,10 +22,10 @@ t_zone			*zone_new(void *header_location, size_t size)
 	t_zone		*zone;
 
 	zone = (t_zone *)header_location;
+	if (size < zone_large)
+		ft_bzero(zone, zone_head_size(zone->size));
 	zone->data = memory_map(NULL, size);
 	zone->size = size;
-	if (size < zone_large)
-		ft_bzero(zone_get_first_byte(zone), 2 * zone_bytes_size(zone->size));
 	zone->next = NULL;
 	return (zone);
 }
