@@ -131,6 +131,7 @@ void				zone_free(t_zone *zone);
 size_t				zone_head_size(size_t size);
 size_t				zone_bytes_size(size_t size);
 size_t				zone_quantum(size_t size);
+size_t				zone_get_available_size(t_zone *zone, void *address);
 
 /*
 ** DEBUG

@@ -13,13 +13,13 @@
 
 #include "malloc.h"
 
-void	*calloc(size_t count, size_t size)
+void *calloc(size_t count, size_t size)
 {
-	void	*ptr;
+	void *ptr;
 
-	// write(1, "CALLOC:", 7);
+	// write(1, "CALLOC:", 8);
 	ptr = malloc(count * size);
 	ft_bzero(ptr, count * size);
-	// write(1, "CALLOC EXIT\n", 12);
+	// write(1, "CALLOC EXIT\n", 13);
 	return (ptr);
 }

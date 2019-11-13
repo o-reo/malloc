@@ -65,8 +65,14 @@ size_t		zone_chunk_size(t_zone *zone, void *address)
 void		zone_chunk_copy(t_zone *zone, void *src, void *dest)
 {
 	size_t	i;
+	size_t max;
 
-	i = zone_chunk_size(zone, src) - 1;
-	while (i--)
+	i = 0;
+	max =  zone->size >= zone_large ? zone->size : zone_chunk_size(zone, src);
+	// write_num(zone->size);
+	while (i < max)
+	{
 		((char*)dest)[i] = ((char*)src)[i];
+		i++;
+	}
 }

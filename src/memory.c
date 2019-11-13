@@ -16,9 +16,9 @@
 /*
 ** round a specified size to the next page_size multiple
 */
-size_t	memory_size_to_page(size_t size)
+size_t memory_size_to_page(size_t size)
 {
-	int		page_size;
+	int page_size;
 
 	page_size = getpagesize();
 	return (page_size * divide_ceil(size, page_size));
@@ -29,25 +29,26 @@ size_t	memory_size_to_page(size_t size)
 ** a multiple of getpagesize
 ** @return the true location of the mapped memory
 */
-void	*memory_map(void *location, size_t size)
+void *memory_map(void *location, size_t size)
 {
-	void	*ptr;
+	void *ptr;
 
 	location = NULL;
-	ptr = mmap(NULL, memory_size_to_page(size), 
-			PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-	if (ptr == (void*)-1) {
+	ptr = mmap(NULL, memory_size_to_page(size),
+			   PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+	if (ptr == (void *)-1)
+	{
 		return (NULL);
 	}
 	return (ptr);
 }
 
-size_t	memory_align_size(size_t size)
+size_t memory_align_size(size_t size)
 {
 	return (size + size % ALIGNMENT);
 }
 
-void	memory_unmap(void *location, size_t size)
+void memory_unmap(void *location, size_t size)
 {
 	munmap(location, memory_size_to_page(size));
 }

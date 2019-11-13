@@ -13,14 +13,13 @@
 
 #include "malloc.h"
 
-
-void	*malloc(size_t size)
+void *malloc(size_t size)
 {
-	void	*ptr;
-	// ptr = mmap(NULL, size, 
+	void *ptr;
+	// ptr = mmap(NULL, size,
 	// 		PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
 
-	// write(1, "MALLOC:", 7);
+	// write(1, "MALLOC:", 8);
 	ptr = NULL;
 	registry_init();
 	if (size <= chunk_small_max)
@@ -29,19 +28,21 @@ void	*malloc(size_t size)
 	}
 	else
 	{
-		// write(1, "LARGE\n", 6);
+		// write(1, "LARGE\n", 7);
 		ptr = registry_zone_large(size);
 	}
 	// write_num(size);
-//	write(1, "\n", 1);
-//	write_ptr(ptr);
-//	write(1, "\n", 1);
+	//	write(1, "\n", 1);
+	//	write_ptr(ptr);
+	//	write(1, "\n", 1);
 	// int i = 0;
 	// while (i < (int)size){
 	// 	((char*)ptr)[i] = 42;
 	// 	i++;
 	// }
-	// write(1, "EXIT MALLOC\n", 12);
+	// write(1, "EXIT MALLOC\n", 13);
 	// show_alloc_mem();
+	// write_ptr(ptr);
+	// write(0, "\n", 2);
 	return (ptr);
 }

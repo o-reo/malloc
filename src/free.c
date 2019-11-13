@@ -13,9 +13,10 @@
 
 #include "malloc.h"
 
-void	free(void *ptr)
+void free(void *ptr)
 {
-	// write(1, "FREE\n", 5);
+	// write(1, "FREE\n", 6);
+	// (void)ptr;
 	registry_chunk_forget(ptr);
-	// write(1, "EXIT FREE\n", 10);
+	// write(1, "EXIT FREE\n", 11);
 }
