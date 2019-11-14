@@ -139,10 +139,9 @@ void registry_chunk_forget(void *address)
 {
 	t_zone *zone;
 
-	if (!(zone = registry_zone_find(address)) || 
+	if (!(zone = registry_zone_find(address)) ||
 		zone_get_available_size(zone, address) == 0)
 	{
-		// write(0, "ko\n", 4);
 		return;
 	}
 	// FREE ZONE IF EMPTY?

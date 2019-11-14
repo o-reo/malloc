@@ -16,8 +16,6 @@
 void *malloc(size_t size)
 {
 	void *ptr;
-	// ptr = mmap(NULL, size,
-	// 		PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
 
 	// write(1, "MALLOC:", 8);
 	ptr = NULL;
@@ -31,18 +29,7 @@ void *malloc(size_t size)
 		// write(1, "LARGE\n", 7);
 		ptr = registry_zone_large(size);
 	}
-	// write_num(size);
-	//	write(1, "\n", 1);
-	//	write_ptr(ptr);
-	//	write(1, "\n", 1);
-	// int i = 0;
-	// while (i < (int)size){
-	// 	((char*)ptr)[i] = 42;
-	// 	i++;
-	// }
+	// ft_bzero(ptr, size);
 	// write(1, "EXIT MALLOC\n", 13);
-	// show_alloc_mem();
-	// write_ptr(ptr);
-	// write(0, "\n", 2);
 	return (ptr);
 }

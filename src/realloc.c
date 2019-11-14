@@ -20,11 +20,23 @@ void *realloc(void *ptr, size_t size)
 
 	// write(1, "REALLOC:", 9);
 	if (ptr == NULL)
-		ptr = malloc(size);
+	{
+		// write(1, "EXIT REALLOC (NULL)\n", 21);
+		return (malloc(size));
+	}
+	// return (ptr);
+	// return (NULL);
+	// new_ptr = malloc(size);
 	if (!(zone = registry_zone_find(ptr)))
-		return (NULL);
+	{
+		// write(1, "EXIT REALLOC (KO)\n", 19);
+		// new_ptr = malloc(size);
+		return (ptr);
+	}
 	if (zone_realloc(zone, ptr, size) == e_true)
 	{
+		// write_num(size);
+		// ft_bzero(ptr, size);
 		// write(1, "EXIT REALLOC (OK)\n", 19);
 		return (ptr);
 	}

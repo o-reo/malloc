@@ -56,16 +56,11 @@ enum e_bool zone_is_empty(t_zone *zone)
 
 void zone_free(t_zone *zone)
 {
-	// if (((t_registry *)g_registries)->next == NULL && zone->next == NULL)
-	// {
-	// 	zone->data = NULL;
-	// 	zone->size = zone_empty;
-	// 	return;
-	// }
-	write_ptr(zone->data);
-	// show_alloc_mem();
+	if (((t_registry *)g_registries)->next == NULL && zone->next == NULL)
+	{
+		return;
+	}
 	memory_unmap(zone->data, zone->size);
 	zone->data = NULL;
 	zone->size = zone_empty;
-	// show_alloc_mem();
 }

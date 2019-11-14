@@ -205,6 +205,25 @@ int test_free(void)
 	return (0);
 }
 
+int test_realloc(void)
+{
+	void *ptrs[255];
+
+	for (int i = 1; i < 255; i += 1)
+	{
+		ptrs[i] = malloc(i);
+		memset(ptrs[i], 'a', i);
+	}
+	for (int i = 1; i < 255; i += 1)
+	{
+		char cmp[i];
+		memset(cmp, 'a', i);
+		ptrs[i] = realloc(ptrs[i], 2 * i);
+		assert(memcmp(ptrs[i], cmp, i) == 0);
+	}
+	return (0);
+}
+
 int main()
 {
 	write(1, "~----------------------------~\n", 31);
@@ -214,5 +233,6 @@ int main()
 	test_registry();
 	test_malloc();
 	test_free();
+	test_realloc();
 	return (0);
 }
