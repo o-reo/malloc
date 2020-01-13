@@ -29,11 +29,11 @@ size_t zone_bytes_size(size_t size)
 /*
 ** Total size of zone metadata
 */
-size_t zone_head_size(size_t size)
+size_t zone_head_size(t_zone *zone)
 {
-	if (size > zone_small)
+	if (zone->id == zone_large_id)
 		return (memory_align_size(sizeof(t_zone)));
-	return (memory_align_size(sizeof(t_zone)) + 2 * zone_bytes_size(size));
+	return (memory_align_size(sizeof(t_zone)) + 2 * zone_bytes_size(zone->size));
 }
 
 enum e_bool zone_is_empty(t_zone *zone)
@@ -42,7 +42,7 @@ enum e_bool zone_is_empty(t_zone *zone)
 	size_t index;
 	uint32_t *bytes;
 
-	if (zone->size >= zone_large)
+	if (zone->id == zone_large_id)
 		return (e_false);
 	bytes = (uint32_t *)zone_get_first_byte(zone);
 	max = zone_bytes_size(zone->size);
@@ -63,4 +63,5 @@ void zone_free(t_zone *zone)
 	memory_unmap(zone->data, zone->size);
 	zone->data = NULL;
 	zone->size = zone_empty;
+	zone->id = zone_empty_id;
 }

@@ -29,7 +29,7 @@ int test_zone(void)
 	registry_init();
 
 	write(1, "--     Zone creation          \n", 31);
-	zone = registry_zone_add(zone_small);
+	zone = registry_zone_add(zone_small, zone_small_id);
 	assert(zone != NULL);
 
 	write(1, "--     Chunk creation         \n", 31);
@@ -77,7 +77,7 @@ int test_registry(void)
 	write(1, "- Testing Registries         \n", 31);
 	registry_reset();
 	registry_init();
-	zone = registry_zone_add(zone_tiny);
+	zone = registry_zone_add(zone_tiny, zone_tiny_id);
 	zone2 = registry_zone_find(zone->data + 1);
 	assert(zone == zone2);
 	chunk = registry_zone_create_chunk(612);

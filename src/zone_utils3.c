@@ -65,8 +65,7 @@ void zone_chunk_copy(t_zone *zone, void *src, void *dest)
 	size_t i;
 	size_t max;
 
-	max = zone->size >= zone_large ? zone->size : zone_chunk_size(zone, src);
-	// write_num(zone_chunk_size(zone, src));
+	max = zone->id == zone_large_id ? zone->size : zone_chunk_size(zone, src);
 	i = 0;
 	while (i < max)
 	{

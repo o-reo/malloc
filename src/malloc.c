@@ -17,7 +17,6 @@ void *malloc(size_t size)
 {
 	void *ptr;
 
-	// write(1, "MALLOC:", 8);
 	ptr = NULL;
 	registry_init();
 	if (size <= chunk_small_max)
@@ -26,10 +25,7 @@ void *malloc(size_t size)
 	}
 	else
 	{
-		// write(1, "LARGE\n", 7);
 		ptr = registry_zone_large(size);
 	}
-	// ft_bzero(ptr, size);
-	// write(1, "EXIT MALLOC\n", 13);
 	return (ptr);
 }

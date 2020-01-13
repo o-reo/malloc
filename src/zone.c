@@ -17,13 +17,14 @@
 ** Init a zone and map its data
 */
 
-t_zone			*zone_new(void *header_location, size_t size)
+t_zone			*zone_new(void *header_location, size_t size, enum e_zone_id id)
 {
 	t_zone		*zone;
 
 	zone = (t_zone *)header_location;
-	if (size < zone_large)
-		ft_bzero(zone, zone_head_size(zone->size));
+	if (id != zone_large_id)
+		ft_bzero(zone, zone_head_size(zone));
+	zone->id = id;
 	zone->data = memory_map(NULL, size);
 	zone->size = size;
 	zone->next = NULL;
@@ -86,7 +87,7 @@ void			*zone_chunk_create(t_zone *zone, size_t size)
 	size_t		prev_i;
 	size_t		current_size;
 
-	if (size > chunk_tiny_max && zone->size != zone_small)
+	if (size > chunk_tiny_max && zone->id != zone_small_id)
 		return (NULL);
 	first_byte = (uint32_t*)zone_get_first_byte(zone);
 	last_byte = (uint32_t*)zone_get_last_byte(zone);

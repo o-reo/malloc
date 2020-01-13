@@ -48,7 +48,7 @@ void *registry_append(void)
 /*
  * Registry
 */
-t_zone *registry_zone_add(size_t size)
+t_zone *registry_zone_add(size_t size, enum e_zone_id id)
 {
 	void *address;
 	void *reg;
@@ -62,15 +62,15 @@ t_zone *registry_zone_add(size_t size)
 		while (address)
 		{
 			zone = (t_zone *)address;
-			if (zone->data == NULL &&
-				zone_head_size(zone->size) < REGISTRY_SIZE)
-				return (zone_new(address, size));
+			if (zone->id == zone_empty_id &&
+				zone_head_size(zone) < REGISTRY_SIZE)
+				return (zone_new(address, size, id));
 			gap = zone->next ? (void *)(zone->next) -
-								   address - zone_head_size(zone->size)
-							 : reg + REGISTRY_SIZE - address - zone_head_size(zone->size);
-			if (gap >= zone_head_size(size))
+								   address - zone_head_size(zone)
+							 : reg + REGISTRY_SIZE - address - zone_head_size(zone);
+			if (gap >= zone_head_size(zone))
 			{
-				zone = zone_new(address + zone_head_size(zone->size), size);
+				zone = zone_new(address + zone_head_size(zone), size, id);
 				((t_zone *)address)->next = zone;
 				return (zone);
 			}
@@ -79,7 +79,7 @@ t_zone *registry_zone_add(size_t size)
 		reg = ((t_registry *)reg)->next;
 	}
 	reg = registry_append();
-	return (zone_new(reg + memory_align_size(sizeof(t_registry)), size));
+	return (zone_new(reg + memory_align_size(sizeof(t_registry)), size, id));
 }
 
 t_zone *registry_zone_find(void *address)
@@ -109,10 +109,12 @@ void *registry_zone_create_chunk(size_t size)
 	void *reg;
 	t_zone *zone;
 	size_t zone_size;
+	enum e_zone_id id;
 
 	chunk = NULL;
 	reg = g_registries;
 	zone_size = size > chunk_tiny_max ? zone_small : zone_tiny;
+	id = size > chunk_tiny_max ? zone_small_id : zone_tiny_id;
 	while (reg && !chunk)
 	{
 		zone = (t_zone *)(reg + memory_align_size(sizeof(t_registry)));
@@ -122,7 +124,7 @@ void *registry_zone_create_chunk(size_t size)
 	}
 	if (!chunk)
 	{
-		chunk = zone_chunk_create(registry_zone_add(zone_size), size);
+		chunk = zone_chunk_create(registry_zone_add(zone_size, id), size);
 	}
 	return (chunk);
 }
@@ -131,7 +133,7 @@ void *registry_zone_large(size_t size)
 {
 	t_zone *zone;
 
-	zone = registry_zone_add(size + memory_align_size(sizeof(t_zone)));
+	zone = registry_zone_add(size, zone_large_id);
 	return (zone->data);
 }
 
@@ -140,12 +142,12 @@ void registry_chunk_forget(void *address)
 	t_zone *zone;
 
 	if (!(zone = registry_zone_find(address)) ||
-		zone_get_available_size(zone, address) == 0)
+		(zone->id != zone_large_id && zone_get_available_size(zone, address) == 0))
 	{
 		return;
 	}
 	// FREE ZONE IF EMPTY?
-	if (zone->size >= zone_large || zone_is_empty(zone))
+	if (zone->id == zone_large_id || zone_is_empty(zone))
 	{
 		zone_free(zone);
 		registry_free_if_empty();

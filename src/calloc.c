@@ -17,9 +17,7 @@ void *calloc(size_t count, size_t size)
 {
 	void *ptr;
 
-	// write(1, "CALLOC:", 8);
 	ptr = malloc(count * size);
 	ft_bzero(ptr, count * size);
-	// write(1, "CALLOC EXIT\n", 13);
 	return (ptr);
 }
